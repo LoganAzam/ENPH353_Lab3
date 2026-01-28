@@ -14,10 +14,10 @@ class line_follower:
 	  self.cmd_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
 
 	def callback(self, data):
-        try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-            rospy.logerr(e)
+		try:
+			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		except CvBridgeError as e:
+			rospy.logerr(e)
             return
 
 	gray = cv2.cvtColor(cv_image, cv_image_code=cv2.COLOR_BGR2GRAY)
