@@ -11,6 +11,7 @@ class image_converter:
 	def __init__(self):
 	  self.bridge = CvBridge()
 	  self.image_sub = rospy.Subscriber(" ", Image, self.callback, queue_size=3)
+	  self.cmd_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
 
 	def callback(self, data):
 	  try:
