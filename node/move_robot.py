@@ -21,34 +21,30 @@ class LineFollower:
             rospy.logerr(e)
             return
 
-        # --- Everything below must be indented under callback ---
         gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
         gauss = cv2.GaussianBlur(gray, (5, 5), 0)
         
-        # Note: cv2.threshold returns two values; we use the second one
         _, thresh = cv2.threshold(gauss, 75, 255, cv2.THRESH_BINARY_INV)
 
-        M = cv2.moments(thresh)
+        moments = cv2.moments(thresh)
         move = Twist()
 
-        if M['m00'] > 0:
-            cx = int(M['m10']/M['m00'])
+        if moments['m00'] > 0:
+            cx = int(moments['m10']/moments['m00'])
             width = cv_image.shape[1]
             error = cx - width/2
             
-            # P-Controller logic
             move.linear.x = 0.2
-            move.angular.z = -float(error) / 100
+            move.angular.z = -float(error) / 90
         else:
-            # Search for the line
             move.linear.x = 0
-            move.angular.z = 0.5
+            move.angular.z = 0.3
 
         self.cmd_pub.publish(move)
 
-        # Optional Debug View
-        cv2.imshow("Centroid View", thresh)
-        cv2.waitKey(1)
+        # Debugging
+        # cv2.imshow("Centroid View", thresh)
+        # cv2.waitKey(1)
 
 if __name__ == '__main__':
     rospy.init_node('line_follower_node')
